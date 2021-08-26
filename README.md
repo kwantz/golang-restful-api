@@ -9,7 +9,7 @@ Simple RESTful API created with Golang, MySQL, HTTP Router, Validation, and Open
 - Get List Categories
 
 ## To Do
-- Create OpenAPI
+- Create OpenAPI (file: [openapi.yaml](https://github.com/kwantz/golang-restful-api/blob/master/openapi.yaml))
 - Setup Database
 - Create Model
 - Create Repository
