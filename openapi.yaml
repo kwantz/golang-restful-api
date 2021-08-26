@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: Category RESTful API
+  description: API Specification for Category RESTful API
+  version: 1.0.0
+
+paths:
+  /categories:
+    get:
+      tags:
+        - Category API
+      summary: Get list of categories
+      description: Get list of categories
+      security:
+        - CategoryAuth: []
+      responses:
+        200:
+          description: Success get all categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebCategories'
+    post:
+      tags:
+        - Category API
+      summary: Create new category
+      description: Create new category
+      security:
+        - CategoryAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateCategory'
+      responses:
+        201:
+          description: Success create new category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebCategory'
+  /categories/{categoryID}:
+    get:
+      tags:
+        - Category API
+      summary: Get category by id
+      description: Get category by id
+      security:
+        - CategoryAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          description: Category ID
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: Success get category by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebCategory'
+    put:
+      tags:
+        - Category API
+      summary: Update category if exist
+      description: Update category if exist
+      security:
+        - CategoryAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          description: Category ID
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateCategory'
+      responses:
+        200:
+          description: Success update category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebCategory'
+    delete:
+      tags:
+        - Category API
+      summary: Delete category
+      description: Delete category
+      security:
+        - CategoryAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          description: Category ID
+          required: true
+          schema:
+            type: number
+      responses:
+        204:
+          description: Success delete category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+
+components:
+  securitySchemes:
+    CategoryAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Authentication for Category API
+
+  schemas:
+    CreateOrUpdateCategory:
+      type: object
+      properties:
+        name:
+          type: string
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+
+    WebCategory:
+      type: object
+      properties:
+        code:
+          type: number
+        status:
+          type: string
+        data:
+          $ref: '#/components/schemas/Category'
+
+    WebCategories:
+      type: object
+      properties:
+        code:
+          type: number
+        status:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
