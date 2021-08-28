@@ -10,7 +10,7 @@ Simple RESTful API created with Golang, MySQL, HTTP Router, Validation, and Open
 
 ## To Do
 - Create OpenAPI (file: [openapi.yaml](https://github.com/kwantz/golang-restful-api/blob/master/openapi.yaml))
-- Setup Database (goto: [Setup](https://github.com/kwantz/golang-restful-api#setup), file: [app/database.go](https://github.com/kwantz/golang-restful-api/blob/master/app/database.go))
+- Setup Database (file: [app/database.go](https://github.com/kwantz/golang-restful-api/blob/master/app/database.go), goto: [Setup](https://github.com/kwantz/golang-restful-api#setup))
 - Create Entity (folder: [model/entity](https://github.com/kwantz/golang-restful-api/blob/master/model/entity))
 - Create Repository (folder: [repository](https://github.com/kwantz/golang-restful-api/blob/master/repository))
 - Create Service (folder: [service](https://github.com/kwantz/golang-restful-api/blob/master/service))
@@ -20,7 +20,7 @@ Simple RESTful API created with Golang, MySQL, HTTP Router, Validation, and Open
 - HTTP Server (file: [main.go](https://github.com/kwantz/golang-restful-api/blob/master/main.go))
 - Error Handler
 - Authentication
-- Integration Test
+- Integration Test / Benchmark (folder: [test](https://github.com/kwantz/golang-restful-api/blob/master/test))
 
 ## Setup
 ```bash
@@ -28,8 +28,16 @@ Simple RESTful API created with Golang, MySQL, HTTP Router, Validation, and Open
 docker-compose up -d
 
 # Create table database
-cat db.sql | docker exec -i golang-restful-api-mysql /usr/bin/mysql -u root --password=password golang_restful_api
+cat sql/databases.sql | docker exec -i golang-restful-api-mysql /usr/bin/mysql -u root --password=password
+cat sql/categories.sql | docker exec -i golang-restful-api-mysql /usr/bin/mysql -u root --password=password golang_restful_api
+cat sql/categories.sql | docker exec -i golang-restful-api-mysql /usr/bin/mysql -u root --password=password golang_restful_api_test
 
 # Run server
 go run main.go
+
+# Run testing
+go test ./test/
+
+# Run benchmark
+go test -bench=. ./test/
 ```
