@@ -24,6 +24,7 @@ func (controller CategoryControllerImpl) Create(writer http.ResponseWriter, requ
 	helper.ReadFromRequestBody(request, &categoryCreateRequest)
 
 	category := controller.CategoryService.Create(request.Context(), categoryCreateRequest)
+	writer.WriteHeader(http.StatusCreated)
 	helper.WriteToResponseBody(writer, web.WebResponse{
 		Code:   http.StatusCreated,
 		Status: "Created",
@@ -47,6 +48,7 @@ func (controller CategoryControllerImpl) Update(writer http.ResponseWriter, requ
 func (controller CategoryControllerImpl) Delete(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	categoryID := helper.ReadInt64FromParams(params, "categoryID")
 	controller.CategoryService.Delete(request.Context(), categoryID)
+	writer.WriteHeader(http.StatusNoContent)
 	helper.WriteToResponseBody(writer, web.WebResponse{
 		Code:   http.StatusNoContent,
 		Status: "No Content",
