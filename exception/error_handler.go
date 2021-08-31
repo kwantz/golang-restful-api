@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/kwantz/golang-restful-api/helper"
 	"github.com/kwantz/golang-restful-api/model/web"
 )
@@ -11,8 +12,26 @@ import (
 func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interface{}) {
 	if notFoundError(writer, request, err) {
 		return
+	} else if validationError(writer, request, err) {
+		return
 	} else {
 		internalServerError(writer, request, err)
+	}
+}
+
+func validationError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
+	exception, ok := err.(validator.ValidationErrors)
+	if ok {
+		log.Printf("Validation Error: %+v\n", exception.Error())
+		writer.WriteHeader(http.StatusBadRequest)
+		helper.WriteToResponseBody(writer, web.WebResponse{
+			Code:   http.StatusBadRequest,
+			Status: "Bad Request",
+			Data:   exception.Error(),
+		})
+		return true
+	} else {
+		return false
 	}
 }
 

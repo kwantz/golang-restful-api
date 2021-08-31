@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/kwantz/golang-restful-api/exception"
 	"github.com/kwantz/golang-restful-api/helper"
 	"github.com/kwantz/golang-restful-api/model/entity"
@@ -13,17 +14,22 @@ import (
 
 type CategoryServiceImpl struct {
 	DB                 *sql.DB
+	Validate           *validator.Validate
 	CategoryRepository repository.CategoryRepository
 }
 
-func NewCategoryService(db *sql.DB, categoryRepository repository.CategoryRepository) CategoryService {
+func NewCategoryService(db *sql.DB, validate *validator.Validate, categoryRepository repository.CategoryRepository) CategoryService {
 	return &CategoryServiceImpl{
 		DB:                 db,
+		Validate:           validate,
 		CategoryRepository: categoryRepository,
 	}
 }
 
 func (service *CategoryServiceImpl) Create(ctx context.Context, request web.CategoryCreateRequest) web.CategoryResponse {
+	err := service.Validate.Struct(request)
+	helper.PanicIfError(err)
+
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.RollbackOrCommit(tx)
@@ -34,6 +40,9 @@ func (service *CategoryServiceImpl) Create(ctx context.Context, request web.Cate
 }
 
 func (service *CategoryServiceImpl) Update(ctx context.Context, request web.CategoryUpdateRequest) web.CategoryResponse {
+	err := service.Validate.Struct(request)
+	helper.PanicIfError(err)
+
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.RollbackOrCommit(tx)

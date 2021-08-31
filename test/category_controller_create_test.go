@@ -35,6 +35,28 @@ func TestCategoryControllerCreate(t *testing.T) {
 	assert.Equal(t, "Gadget", categoryResponse["name"])
 }
 
+func TestCategoryControllerCreateValidation(t *testing.T) {
+	db := NewTestDB()
+	TruncateTestDB(db)
+
+	requestBody := strings.NewReader(`{"name" : ""}`)
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, GetCategoryUrl(), requestBody)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("X-API-Key", "RAHASIA")
+
+	handler := NewTestHandler(db)
+	handler.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+	webReponse := ToWebResponse(body)
+
+	assert.Equal(t, 400, response.StatusCode)
+	assert.Equal(t, float64(400), webReponse["code"])
+	assert.Equal(t, "Bad Request", webReponse["status"])
+}
+
 func BenchmarkCategoryControllerCreate(b *testing.B) {
 	db := NewTestDB()
 	TruncateTestDB(db)

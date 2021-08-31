@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kwantz/golang-restful-api/app"
 	"github.com/kwantz/golang-restful-api/controller"
@@ -14,8 +15,9 @@ import (
 
 func main() {
 	db := app.NewDB()
+	validate := validator.New()
 	categoryRepository := repository.NewCategoryRepository()
-	categoryService := service.NewCategoryService(db, categoryRepository)
+	categoryService := service.NewCategoryService(db, validate, categoryRepository)
 	categoryController := controller.NewCategoryController(categoryService)
 
 	router := app.NewRouter(categoryController)
