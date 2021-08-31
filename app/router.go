@@ -1,16 +1,19 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/kwantz/golang-restful-api/controller"
+	"github.com/kwantz/golang-restful-api/middleware"
 )
 
-func NewRouter(categoryController controller.CategoryController) *httprouter.Router {
+func NewRouter(categoryController controller.CategoryController) http.Handler {
 	router := httprouter.New()
 	setupCategoryRouter(router, categoryController)
 
 	// router.PanicHandler = exception.ErrorHandler
-	return router
+	return middleware.NewAuthMiddleware(router)
 }
 
 func setupCategoryRouter(router *httprouter.Router, categoryController controller.CategoryController) {
