@@ -18,7 +18,7 @@ Simple RESTful API created with Golang, MySQL, HTTP Router, Validation, and Open
 - Create Controller (folder: [controller](https://github.com/kwantz/golang-restful-api/blob/master/service))
 - HTTP Router (file: [app/router.go](https://github.com/kwantz/golang-restful-api/blob/master/app/router.go))
 - HTTP Server (file: [main.go](https://github.com/kwantz/golang-restful-api/blob/master/main.go))
-- Error Handler
+- Error Handler (folder: [exception](https://github.com/kwantz/golang-restful-api/blob/master/exception))
 - Authentication (file: [middleware/auth_middleware.go](https://github.com/kwantz/golang-restful-api/blob/master/middleware/auth_middleware.go))
 - Integration Test / Benchmark (folder: [test](https://github.com/kwantz/golang-restful-api/blob/master/test))
 
