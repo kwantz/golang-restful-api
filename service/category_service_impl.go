@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/kwantz/golang-restful-api/exception"
 	"github.com/kwantz/golang-restful-api/helper"
 	"github.com/kwantz/golang-restful-api/model/entity"
 	"github.com/kwantz/golang-restful-api/model/web"
@@ -37,10 +38,9 @@ func (service *CategoryServiceImpl) Update(ctx context.Context, request web.Cate
 	helper.PanicIfError(err)
 	defer helper.RollbackOrCommit(tx)
 
-	category, err := service.CategoryRepository.FindByID(ctx, tx, request.ID)
-	helper.PanicIfError(err)
-
+	category := service.findCategoryByIdOrPanicNotFound(ctx, tx, request.ID)
 	category.Name = request.Name
+
 	category = service.CategoryRepository.Update(ctx, tx, category)
 	return helper.ToCategoryResponse(category)
 }
@@ -50,9 +50,7 @@ func (service *CategoryServiceImpl) Delete(ctx context.Context, categoryID int64
 	helper.PanicIfError(err)
 	defer helper.RollbackOrCommit(tx)
 
-	category, err := service.CategoryRepository.FindByID(ctx, tx, categoryID)
-	helper.PanicIfError(err)
-
+	category := service.findCategoryByIdOrPanicNotFound(ctx, tx, categoryID)
 	service.CategoryRepository.Delete(ctx, tx, category)
 }
 
@@ -61,9 +59,7 @@ func (service *CategoryServiceImpl) FindByID(ctx context.Context, categoryID int
 	helper.PanicIfError(err)
 	defer helper.RollbackOrCommit(tx)
 
-	category, err := service.CategoryRepository.FindByID(ctx, tx, categoryID)
-	helper.PanicIfError(err)
-
+	category := service.findCategoryByIdOrPanicNotFound(ctx, tx, categoryID)
 	return helper.ToCategoryResponse(category)
 }
 
@@ -74,4 +70,10 @@ func (service *CategoryServiceImpl) FindAll(ctx context.Context) []web.CategoryR
 
 	categories := service.CategoryRepository.FindAll(ctx, tx)
 	return helper.ToCategoriesResponse(categories)
+}
+
+func (service *CategoryServiceImpl) findCategoryByIdOrPanicNotFound(ctx context.Context, tx *sql.Tx, categoryID int64) entity.Category {
+	category, err := service.CategoryRepository.FindByID(ctx, tx, categoryID)
+	exception.PanicNotFoundIfError(err)
+	return category
 }
